@@ -10,7 +10,7 @@
 						aria-label="menu" 
 						aria-expanded="false" 
 						:class="{ 'is-active': showMobileNav }"
-						data-target="navbarBasicExample"
+						ref="closeNavBar"
 					>
 					<span aria-hidden="true"></span>
 					<span aria-hidden="true"></span>
@@ -18,7 +18,11 @@
 				</a>
 			</div>
 
-			<div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': showMobileNav }">
+			<div 
+				class="navbar-menu" 
+				:class="{ 'is-active': showMobileNav }"
+				ref="navBarMenuRef"
+			>
 				<div class="navbar-end">
 					<router-link @click="showMobileNav = false" :to="{name: 'notes'}" class="navbar-item" active-class="is-active">Notes</router-link>
 					<router-link @click="showMobileNav = false" :to="{name: 'stats'}" class="navbar-item" active-class="is-active">Stats</router-link>
@@ -30,8 +34,20 @@
 </template>
 <script setup>
 import { ref } from 'vue'
+import { onClickOutside } from '@vueuse/core'
 
 let showMobileNav = ref(false);
+
+/**
+ * click outside to close
+ */
+let navBarMenuRef = ref("");
+let closeNavBar = ref("")
+onClickOutside(
+	navBarMenuRef, //target
+	() => { showMobileNav.value = false; }, // handler
+	{ ignore: [closeNavBar] } // options
+);
 
 </script>
 

@@ -10,16 +10,19 @@
 		</div>
 		<footer class="card-footer">
 		<router-link class="card-footer-item" :to="{name: 'note-edit', params:{id: note.id} }">Edit</router-link>
-		<a href="#" class="card-footer-item" @click.prevent="storeNotes.deleteNote(note.id)">Delete</a>
-		<!--<a href="#" class="card-footer-item" @click.prevent="deleteNote(note.id)">Delete</a> !-->
+		<a href="#" class="card-footer-item" @click.prevent="modals.deleteNote = true">Delete</a>
+		<!--<a href="#" class="card-footer-item" @click.prevent="storeNotes.deleteNote(note.id)">Delete</a> from pinia!-->
+		<!--<a href="#" class="card-footer-item" @click.prevent="deleteNote(note.id)">Delete</a> from emits !-->
 		</footer>
+		<ModalDelete v-if="modals.deleteNote" v-model="modals.deleteNote"/>
 	</div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, reactive } from 'vue';
 import { RouterLink } from 'vue-router'
 import { useStoreNotes } from '@/stores/storeNotes';
+import ModalDelete from '@/components/Notes/ModalDelete.vue'
 
 let storeNotes = useStoreNotes();
 let props = defineProps({
@@ -35,6 +38,14 @@ let characterLength = computed(() => {
 	return length > 1 
 		? `${length} characters` 
 		: `${length} character` ;
+});
+
+/**
+ * modals
+ */
+let modals = reactive({
+	deleteNote: false,
+	//editNote: false
 });
 
 // magamit ra og naa sa parent component ang eh delete nga note

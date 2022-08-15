@@ -13,7 +13,7 @@
 				></textarea>
 			</div>
 		</div>
-		Count: {{ characterCount }}
+		Count: <span class="text is-success">{{ modelValue? modelValue.length : 0  }}</span>
 		<div class="field is-grouped is-grouped-right">
 			<div class="control">
 				<slot name="buttons" />
@@ -33,7 +33,7 @@ let focusTextarea = () => {
 }
 
 /** pre defined functions */
-defineProps({
+let props = defineProps({
 	modelValue: {
 		type: String,
 		default: null
@@ -49,10 +49,6 @@ defineProps({
 	label: {
 		type: String,
 		default: 'Add Note'
-	},
-	characterCount: {
-		type: Number,
-		default: 0
 	}
 });
 

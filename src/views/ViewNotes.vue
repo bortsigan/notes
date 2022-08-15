@@ -1,6 +1,6 @@
 <template>
 	<div class="view-notes">
-		<AddEditNote v-model="note" ref="addEditNoteRef" :characterCount="note.length">
+		<AddEditNote v-model="note" ref="addEditNoteRef">
 			<template v-slot:buttons>
 				<button 
 					:disabled="!note"
@@ -34,8 +34,7 @@ let addNote = () => {
 	addEditNoteRef.value.focusTextarea();
 }
 
-watchCharacters(note);
-
+// watchCharacters(note);
 
 // if naay gipasa gikan sa <Note />
 // let deleteNote = (targetId) => {
