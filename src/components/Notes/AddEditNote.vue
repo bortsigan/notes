@@ -35,7 +35,7 @@ let focusTextarea = () => {
 /** pre defined functions */
 let props = defineProps({
 	modelValue: {
-		type: String,
+		type: [String, Number],
 		default: null
 	},
 	bgColor: {

@@ -11,7 +11,7 @@
 			</section>
 			<footer class="modal-card-foot is-justify-content-flex-end">
 				<button class="button" @click="closeModal">Cancel</button>
-				<button class="button is-danger">Delete</button>
+				<button class="button is-danger" @click="storeNotes.deleteNote(note)">Delete</button>
 			</footer>
 		</div>
 	</div>
@@ -21,10 +21,18 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
-defineProps({
+import { useStoreNotes } from '@/stores/storeNotes';
+
+let storeNotes = useStoreNotes();
+
+let props = defineProps({
 	modelValue: {
 		type: Boolean,
 		default: false
+	},
+	note: {
+		type: [String, Number],
+		default: 0
 	}
 })
 
@@ -40,19 +48,27 @@ let closeModal = () => {
 let closeOrCancel = ref("");
 onClickOutside(closeOrCancel, closeModal);
 
-/**
- * on mounted lifecycle
- */
 
-let handleEscapeEvent = (e) => {
-	console.log('close it');
-	if (e.key === "Escape") closeModal();
+/**
+ * event handlers
+ */
+let handleEscapeOrDeleteEvent = (e) => {
+	if (e.key === "Escape") {
+		closeModal();
+	}
+
+	if (e.key === "Enter") {
+		storeNotes.deleteNote(props.note);
+	}
 }
+/**
+ * on mounted lifecycle hooks (incredible)
+ */
 onMounted(() => {
-	addEventListener('keyup', handleEscapeEvent)
+	addEventListener('keyup', handleEscapeOrDeleteEvent)
 });
 
 onUnmounted(() => {
-	removeEventListener('keyup', handleEscapeEvent); // must remove event listener to prevent duplication of firing the event
+	removeEventListener('keyup', handleEscapeOrDeleteEvent); // must remove event listener to prevent duplication of firing the event
 })
 </script>

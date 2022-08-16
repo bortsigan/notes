@@ -1,36 +1,71 @@
 import { defineStore } from 'pinia'
+import { 
+	collection,
+	orderBy,
+	getDocs,  
+	query, 
+	where, 
+	onSnapshot, 
+	doc,
+	setDoc,
+	addDoc,
+	deleteDoc,
+	updateDoc
+} from 'firebase/firestore';
+import { db } from '@/js/firebase';
+
+const targetTable = "notes";
+const collectionRef = collection(db, targetTable);
+const notesCollection = query(collectionRef, orderBy("date", "asc"));
 
 export const useStoreNotes = defineStore('storeNotes', {
 	state: () => {
 		return { 
-			notes: [
-				{
-					id: 1,
-					content: `As with computed properties`
-				},
-				{
-					id: 2,
-					content: ` you can combine multiple getters`
-				}
-			]
+			notes: []
 		}
 	},
 	actions: {
-		addNote(note) {
-			this.notes.unshift({
-				id: Date.now(),
-				content: note
-			});
+		async addNote(content) {
+			let date = Date.now().toString();
+			// await setDoc(doc(collectionRef , Date.now().toString()), {
+			// 	id, // id: id
+			// 	content // content: content
+			// }); // to allow user to generate its own ID
+
+			await addDoc(collectionRef, {
+				content,
+				date
+			}); // to allow firestore to generate its own ID
 		},
-		deleteNote(id) {
-			this.notes = this.notes.filter(note => {
-				return note.id !== id;
-			});
+		async deleteNote(id) {
+			// https://firebase.google.com/docs/firestore/manage-data/delete-data?hl=en&authuser=0
+			// this.notes = this.notes.filter(note => {
+			// 	return note.id !== id;
+			// });
+			await deleteDoc(doc(db, targetTable, id));
 		},
-		editNote(id, content) {
-			let index = this.notes.findIndex(note => note.id == id);
-			console.log(content);
-			this.notes[index].content = content;
+		async editNote(id, content) {
+			// let index = this.notes.findIndex(note => note.id == id);
+			// console.log(content);
+			// this.notes[index].content = content;
+			
+			// https://firebase.google.com/docs/firestore/manage-data/add-data?hl=en&authuser=0
+			await updateDoc(doc(collectionRef, id), {
+				content
+			})
+		},
+		async getNotes() {
+			onSnapshot(notesCollection, (notesSnapShot) => {
+				let notes = [];
+				notesSnapShot.forEach((note) => {
+					notes.unshift({
+						id: note.id,
+						content: note.data().content,
+						date: note.data().date
+					})
+				});
+				this.notes = notes;
+			});
 		}
 	},
 	getters: {

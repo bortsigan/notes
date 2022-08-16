@@ -6,6 +6,13 @@
 </template>
 
 <script setup>
+import  { onMounted } from 'vue'
 import NavBar from '@/components/Layout/NavBar.vue'
-// import { RouterLink, RouterView } from 'vue-router'
+import { useStoreNotes } from '@/stores/storeNotes';
+
+let storeNotes = useStoreNotes(); 
+
+onMounted(() => {
+	storeNotes.getNotes();
+})
 </script>
