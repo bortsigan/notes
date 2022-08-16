@@ -9,7 +9,23 @@
 				>Add New Note</button>
 			</template>
 		</AddEditNote>
-		<Note v-for="note in storeNotes.notes" :note="note" :key="note.id"/>
+		
+		<progress v-if="!storeNotes.notesLoaded" class="progress is-large is-success" max="100"/>
+
+		<template v-else> 
+			<!-- 
+				1. best practice is it should be wrapped whenever there is a if else condition 
+				2. condition statements and loops statement should not be declared in on component
+					ex: 
+					<Note v-if="true" v-for="note" /> NO!
+			!-->
+			<Note v-for="note in storeNotes.notes" :note="note" :key="note.id"/>
+
+			<div 
+				v-if="!storeNotes.notes.length" 
+				class="is-size-4 has-text-centered has-text-grey-light is-family-monospace py-6"
+				>No notes to be displayed!</div>
+		</template>
 		<!-- <Note v-for="note in storeNotes.notes" :note="note" :key="note.id" @deleteANote="deleteNote"/> -->
 	</div>
 </template>
