@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 import Note from '@/components/Notes/Note.vue';
 import AddEditNote from '@/components/Notes/AddEditNote.vue';
@@ -50,8 +50,11 @@ let addNote = () => {
 	addEditNoteRef.value.focusTextarea();
 }
 
-// watchCharacters(note);
+watchCharacters(note);
 
+onMounted(() => {
+	storeNotes.getNotes();
+})
 // if naay gipasa gikan sa <Note />
 // let deleteNote = (targetId) => {
 // 	notes.value = notes.value.filter(note => {

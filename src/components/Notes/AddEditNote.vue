@@ -13,7 +13,7 @@
 				></textarea>
 			</div>
 		</div>
-		Count: <span class="text is-success">{{ modelValue? modelValue.length : 0  }}</span>
+		<span class="tag is-light">Count: {{ modelValue? modelValue.length : 0  }}</span>
 		<div class="field is-grouped is-grouped-right">
 			<div class="control">
 				<slot name="buttons" />
