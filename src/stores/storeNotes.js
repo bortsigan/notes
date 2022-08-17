@@ -34,6 +34,11 @@ export const useStoreNotes = defineStore('storeNotes', {
 		init() {
 			const storeAuth = useStoreAuth();
 
+			/**
+			 * prevent access from different users even on manual input of user ID
+			 * find it in Firestore database / rules tab
+			 * 
+			 */
 			collectionRef = collection(db, 'users', storeAuth.user.id, targetTable);
 			notesCollection = query(collectionRef, orderBy("date", "asc"));
 
@@ -83,6 +88,8 @@ export const useStoreNotes = defineStore('storeNotes', {
 				});
 				this.notes = notes;
 				this.notesLoaded = true;
+			}, error => {
+				alert(error.message);
 			});
 		},
 		clearNotes() {
@@ -92,7 +99,6 @@ export const useStoreNotes = defineStore('storeNotes', {
 				// unsubscrbie active listener to prevent calling on different snapshot collection aside from the current logged in user
 				getNotesSnapshot(); 
 			}
-
 		}
 	},
 	getters: {

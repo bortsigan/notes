@@ -3,12 +3,23 @@
 		<label for="textarea" class="has-text-white">{{ label }}</label>
 		<div class="field">
 			<div class="control">
-				<textarea 
+				<!-- <textarea 
 					class="textarea" 
 					:placeholder="placeholder" 
 					ref="textareaRef"
 					v-model="modelValue"
 					@input="$emit('update:modelValue', modelValue)"
+					v-autofocus
+				></textarea> 
+				v-model was changed to :value
+				emit modelValue was changed to $event.target.value ( acessing the value of the textarea itself )
+				-->
+				<textarea 
+					class="textarea" 
+					:placeholder="placeholder" 
+					ref="textareaRef"
+					:value="modelValue"
+					@input="$emit('update:modelValue', $event.target.value)"
 					v-autofocus
 				></textarea>
 			</div>
