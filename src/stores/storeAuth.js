@@ -6,6 +6,7 @@ import {
 	onAuthStateChanged // for login state changes https://firebase.google.com/docs/auth/web/manage-users?hl=en&authuser=0
 } from "firebase/auth";
 import { auth } from '@/js/firebase'
+import { useStoreNotes } from '@/stores/storeNotes'
 
 export const useStoreAuth = defineStore('storeAuth', {
 	state: () => {
@@ -15,6 +16,8 @@ export const useStoreAuth = defineStore('storeAuth', {
 	},
 	actions: {
 		init() {
+			const storeNotes = useStoreNotes()
+
 			onAuthStateChanged(auth, (user) => {
 				if (user) {
 					// User is signed in, see docs for a list of available properties
@@ -24,9 +27,11 @@ export const useStoreAuth = defineStore('storeAuth', {
 						email: user.email
 					};
 					this.router.push('/')
+					storeNotes.init();
 				} else {
 					this.user = {};
 					this.router.replace('/login')
+					storeNotes.clearNotes();
 				}
 			});
 		},

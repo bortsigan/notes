@@ -13,10 +13,15 @@ import {
 	updateDoc
 } from 'firebase/firestore';
 import { db } from '@/js/firebase';
+import { useStoreAuth } from '@/stores/storeAuth';
 
 const targetTable = "notes";
-const collectionRef = collection(db, targetTable);
-const notesCollection = query(collectionRef, orderBy("date", "asc"));
+//const collectionRef = collection(db, 'users', 'SCBHwVcrYEgG3u2v6HGfgGFKGQC2', targetTable);
+//const notesCollection = query(collectionRef, orderBy("date", "asc"));
+
+let collectionRef;
+let notesCollection;
+let getNotesSnapshot;
 
 export const useStoreNotes = defineStore('storeNotes', {
 	state: () => {
@@ -26,6 +31,14 @@ export const useStoreNotes = defineStore('storeNotes', {
 		}
 	},
 	actions: {
+		init() {
+			const storeAuth = useStoreAuth();
+
+			collectionRef = collection(db, 'users', storeAuth.user.id, targetTable);
+			notesCollection = query(collectionRef, orderBy("date", "asc"));
+
+			this.getNotes()
+		},
 		async addNote(content) {
 			let date = Date.now().toString();
 			// await setDoc(doc(collectionRef , Date.now().toString()), {
@@ -43,7 +56,8 @@ export const useStoreNotes = defineStore('storeNotes', {
 			// this.notes = this.notes.filter(note => {
 			// 	return note.id !== id;
 			// });
-			await deleteDoc(doc(db, targetTable, id));
+
+			await deleteDoc(doc(collectionRef, id));
 		},
 		async editNote(id, content) {
 			// let index = this.notes.findIndex(note => note.id == id);
@@ -57,7 +71,8 @@ export const useStoreNotes = defineStore('storeNotes', {
 		},
 		async getNotes() {
 			this.notesLoaded = false;
-			onSnapshot(notesCollection, (notesSnapShot) => {
+
+			getNotesSnapshot = onSnapshot(notesCollection, (notesSnapShot) => {
 				let notes = [];
 				notesSnapShot.forEach((note) => {
 					notes.unshift({
@@ -69,6 +84,15 @@ export const useStoreNotes = defineStore('storeNotes', {
 				this.notes = notes;
 				this.notesLoaded = true;
 			});
+		},
+		clearNotes() {
+			this.notes = [];
+
+			if (getNotesSnapshot) {
+				// unsubscrbie active listener to prevent calling on different snapshot collection aside from the current logged in user
+				getNotesSnapshot(); 
+			}
+
 		}
 	},
 	getters: {
