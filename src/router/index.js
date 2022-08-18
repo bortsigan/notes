@@ -42,10 +42,6 @@ const router = createRouter({
 // navigation guards
 router.beforeEach(async (to, from) => {
 	const storeAuth = useStoreAuth()
-
-	console.clear();
-	console.log('to: ', to);
-
 	if (
 		// make sure the user is authenticated
 		!storeAuth.user.id && 
