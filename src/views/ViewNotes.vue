@@ -30,7 +30,7 @@
 	</div>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
 
 import Note from '@/components/Notes/Note.vue';
@@ -39,26 +39,15 @@ import AddEditNote from '@/components/Notes/AddEditNote.vue';
 import { useStoreNotes } from '@/stores/storeNotes';
 import { watchCharacters } from '@/use/watchCharacters';
 
-export default {
-	async setup() {
-		let note = ref("");
-		let addEditNoteRef = ref("");
-		let storeNotes = useStoreNotes();
+let note = ref("");
+let addEditNoteRef = ref("");
+let storeNotes = useStoreNotes();
 
-		let addNote = () => {
-			storeNotes.addNote(note.value);
+let addNote = () => {
+	storeNotes.addNote(note.value);
 
-			note.value = null; // for the value 
-			addEditNoteRef.value.focusTextarea();
-		}
-
-		return {
-			note,
-			addEditNoteRef,
-			storeNotes,
-			addNote
-		}
-	}
+	note.value = null; // for the value 
+	addEditNoteRef.value.focusTextarea();
 }
 
 //watchCharacters(note.value);
