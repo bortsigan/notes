@@ -12,22 +12,26 @@ const routes = [
 	{
 		path: '/',
 		name: 'notes',
-		component: ViewNotes
+		component: ViewNotes,
+		meta: { requiresAuth: true }
 	},
 	{
 		path: '/stats',
 		name: 'stats',
-		component: ViewStats
+		component: ViewStats,
+		meta: { requiresAuth: true }
 	},
 	{
 		path: '/note-edit/:id',
 		name: 'note-edit',
-		component: ViewEditNote
+		component: ViewEditNote,
+		meta: { requiresAuth: true }
 	},
 	{
 		path: '/login',
 		name: 'login',
-		component: ViewAuth
+		component: ViewAuth,
+		meta: { requiresAuth: false }
 	},
 ];
 const router = createRouter({
@@ -38,10 +42,14 @@ const router = createRouter({
 // navigation guards
 router.beforeEach(async (to, from) => {
 	const storeAuth = useStoreAuth()
+
+	console.clear();
+	console.log('to: ', to);
+
 	if (
 		// make sure the user is authenticated
 		!storeAuth.user.id && 
-		// avoid an infinite redirect
+		// avoid an infinite redirect	
 		to.name !== 'login'
 	) { // if not logged in
 		return { name: 'login' } // redirect to login
