@@ -37,7 +37,6 @@ let props = defineProps({
 /**
  * computed
  */
-
 let dateFormat = computed(() => {
 	let date = new Date(parseInt(props.note.date));
 	let formatted = useDateFormat(date, "MM/DD/YYYY @ HH:mm");

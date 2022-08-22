@@ -8,14 +8,17 @@ import {
 import { auth } from '@/js/firebase'
 import { useStoreNotes } from '@/stores/storeNotes'
 
+
 export const useStoreAuth = defineStore('storeAuth', {
 	state: () => {
 		return { 
-			user: []
+			user: [],
+			isLoading : false
 		}
 	},
 	actions: {
 		init() {
+			this.isLoading = true;
 			const storeNotes = useStoreNotes()
 
 			onAuthStateChanged(auth, (user) => {
@@ -27,30 +30,28 @@ export const useStoreAuth = defineStore('storeAuth', {
 						email: user.email
 					};
 					this.router.push('/')
-					storeNotes.init();
+					storeNotes.init()
 				} else {
 					this.user = {};
 					this.router.replace('/login')
 					storeNotes.clearNotes();
 				}
+				this.isLoading = false;
 			});
 		},
 		register(credentials) {
 			createUserWithEmailAndPassword(auth, credentials.email, credentials.password)
 			.then((userCredential) => {
 				const user = userCredential.user;
-
-				console.log(user);
-
 			})
 			.catch((error) => {
 				// const errorCode = error.code;
 				// const errorMessage = error.message;
-				
 				console.warn("error message:", error.message);
 			});
 		},
 		loginUser({email, password}) {
+			this.isLoading = true;
 			signInWithEmailAndPassword(auth, email, password)
 			.then((userCredential) => {
 				const user = userCredential.user;
@@ -58,20 +59,22 @@ export const useStoreAuth = defineStore('storeAuth', {
 			})
 			.catch((error) => {
 				// const errorCode = error.code;
-				// const errorMessage = error.message;
-
+				// const errorMessage = error.message
 				console.log("error message: " , error.message);
+			})
+			.finally(() => {
+				this.isLoading = false;
 			});
 		},
-		logoutUser() {
-			signOut(auth).then(() => {
+		async logoutUser() {
+			await signOut(auth).then(() => {
 				console.log('signed out');
-			}).catch((error) => {
+			})
+			.catch((error) => {
 				console.warn("error message: ", error.message);
 			});
 		}
 	},
 	getters: {
-		
 	}
 })

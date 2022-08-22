@@ -31,7 +31,7 @@ export const useStoreNotes = defineStore('storeNotes', {
 		}
 	},
 	actions: {
-		init() {
+		async init() {
 			const storeAuth = useStoreAuth();
 
 			/**
@@ -42,7 +42,7 @@ export const useStoreNotes = defineStore('storeNotes', {
 			collectionRef = collection(db, 'users', storeAuth.user.id, targetTable);
 			notesCollection = query(collectionRef, orderBy("date", "asc"));
 
-			this.getNotes()
+			await this.getNotes()
 		},
 		async addNote(content) {
 			let date = Date.now().toString();
