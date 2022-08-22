@@ -60,7 +60,7 @@ let modals = reactive({
 	editNote: false
 });
 
-// magamit ra og naa sa parent component ang eh delete nga note
+// child -> parent
 // let emit = defineEmits(['deleteANote']);
 // let deleteNote = (id) => {
 // 	emit('deleteANote', id);
